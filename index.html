@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <title>ToDo App</title>
+    <link rel="stylesheet" href="./lib/onsenui/css/onsenui.css">
+    <link rel="stylesheet" href="./lib/onsenui/css/old-onsen-css-components.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script src="cordova.js"></script>
+    <script src="./lib/onsenui/js/onsenui.js"></script>
+    <script src="./lib/angular.min.js"></script>
+    <!--  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
+    <script src="./lib/onsenui/js/angular-onsenui.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/controllers.js"></script>
+    <style type="text/css">
+    #user {
+        color: white;
+    }
+    </style>
+</head>
+
+<body ng-app="myApp">
+    <ons-splitter var="mySplitter" ng-controller="SplitterController as splitter">
+        <ons-splitter-side side="left" width="220px" collapse swipeable>
+            <ons-page>
+                <ons-list>
+                    <ons-list-item ng-click="splitter.load('home.html')" tappable>
+                        Home
+                    </ons-list-item>
+                    <!-- <ons-list-item ng-click="splitter.load('settings.html')" tappable>
+                        Settings
+                    </ons-list-item> -->
+                    <ons-list-item ng-click="splitter.load('about.html')" tappable>
+                        About
+                    </ons-list-item>
+                </ons-list>
+            </ons-page>
+        </ons-splitter-side>
+        <ons-splitter-content page="home.html"></ons-splitter-content>
+    </ons-splitter>
+    <template id="home.html">
+        <ons-page ng-controller="TabbarController">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-toolbar-button ng-click="mySplitter.left.open()">
+                        <ons-icon icon="md-menu"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+                <div class="center">To-Do</div>
+            </ons-toolbar>
+            <ons-tabbar swipeable position="auto" ons-prechange="updateTitle($event)">
+                <ons-tab page="tab1.html" label="Pending Tasks" icon="fa-exclamation-circle"  size="10px" active>
+                </ons-tab>
+                <ons-tab page="tab2.html" label="Completed Tasks" icon="fa-check-circle"  size="10px">
+                </ons-tab>
+            </ons-tabbar>
+            <ons-fab position="bottom right" ng-click="myModal.show()">
+                <ons-icon icon="md-plus"></ons-icon>
+            </ons-fab>
+        </ons-page>
+    </template>
+    <ons-modal var="myModal" direction="up" ng-controller="PageController as page">
+        <div style="text-align: center">
+            <p>
+                <div style="text-align: center; margin-top: 30px">
+                    <p>
+                        <ons-input input-id="user" id="username" modifier="underbar" placeholder="Description" float ng-model="page.username"></ons-input>
+                    </p>
+                    <p>
+                        <label class="left">
+                            <ons-checkbox input-id="impCheck" ng-model="page.imp"></ons-checkbox>
+                        </label>
+                        <label for="impCheck" class="center">
+                            Mark as Important
+                        </label>
+                    </p>
+                    <p style="margin-top: 30px;">
+                        <ons-button ng-click="page.login()">Add</ons-button>
+                    </p>
+                </div>
+                <ons-button ng-click="myModal.hide()">Cancel</ons-button>
+            </p>
+        </div>
+    </ons-modal>
+    <template id="tab1.html">
+        <ons-page id="Tab1">
+            <ons-list ng-controller="pendingList">
+                <ons-list-item tappable ng-repeat="item in pending track by $index">
+                    <label for="check-1" class="center">
+                        <label class="left">
+                            <ons-checkbox input-id="check-1" ng-model="item.isChecked" ng-change="completeTask(item, $index)"></ons-checkbox>
+                        </label>
+                        <!-- <span ng-if="item.imp == 1">📌 &nbsp;</span> -->
+                        &nbsp; {{item.name}}
+                    </label>
+                    <label class="right">
+                        <span ng-if="item.imp == 1">
+                          &nbsp;
+                          <ons-icon icon="md-alert-circle" style="color: #F5C52C;" size="20px"></ons-icon>
+                        </span>
+                    </label>
+                </ons-list-item>
+            </ons-list>
+        </ons-page>
+    </template>
+    <template id="tab2.html">
+        <ons-page id="Tab2">
+            <ons-list ng-controller="completedList">
+                <ons-list-item tappable ng-repeat="ite in completed track by $index">
+                    <div class="right">
+                        <ons-button modifier="quiet" ng-click="delete(ite, $index)">
+                            <ons-icon icon="md-delete" size="25px"></ons-icon>
+                        </ons-button>
+                    </div>
+                    <!-- <div class="left">
+                      <ons-icon icon="md-check-circle" class="list-item__icon"></ons-icon>
+                    </div> -->
+                    <!-- <label class="left">
+            <ons-checkbox input-id="check-1" checked></ons-checkbox>
+          </label> -->
+                    <label for="check-1" class="center">
+                        <ons-icon icon="fa-check-square" style="color: gray;" size="20px"></ons-icon>
+                        &nbsp; {{ite.name}}
+                    </label>
+                </ons-list-item>
+            </ons-list>
+        </ons-page>
+    </template>
+    <!-- <template id="settings.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="left">
+                    <ons-toolbar-button ng-click="mySplitter.left.open()">
+                        <ons-icon icon="md-menu"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+                <div class="center">
+                    Settings
+                </div>
+            </ons-toolbar>
+        </ons-page>
+    </template> -->
+    <template id="about.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="left">
+                    <ons-toolbar-button ng-click="mySplitter.left.open()">
+                        <ons-icon icon="md-menu"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+                <div class="center">
+                    About
+                </div>
+            </ons-toolbar>
+            <p style="text-align: center;">
+                This app is developed by Apoorva Mohite & Komal Chitragar
+            </p>
+        </ons-page>
+    </template>
+</body>
+
+</html>

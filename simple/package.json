@@ -1,0 +1,29 @@
+{
+  "name": "helloworld",
+  "displayName": "Todo App",
+  "version": "1.0.0",
+  "description": "A simple todo list app for your daily tasks.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecosystem:cordova"
+  ],
+  "author": "Apoorva Mohite and Komal Chitragar",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "cordova-android": "^8.0.0"
+  },
+  "devDependencies": {
+    "cordova-plugin-whitelist": "^1.3.3"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {}
+    },
+    "platforms": [
+      "android"
+    ]
+  }
+}
